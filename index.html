@@ -31,6 +31,15 @@
       4: "SYNAPTOGENESIS",
       5: "DHASURV"
     };
+	
+	const questions = [
+	"1.This is the condition of not having access to sufficient food, or food of an adequate quality, to meet one's basic needs.",
+	"2. Which omega-3 fatty acid is critical for brain development?",
+	"3. Aside from the retina, where can we find the highest concentration of docosahexaenoic acid (DHA) in the body?",
+	"4. What process refers to the formation of the crucial junction where a neuron communicates with another cell?",
+	"5. Complete the sentence: With Lactum 3+, we can help give the Filipino children the DHA they ________!"
+	];
+
 
     window.setTable = function() {
       tableNumber = document.getElementById("tableNumber").value;
@@ -41,6 +50,8 @@
 
     window.showQuestion = function(num) {
   currentQuestion = num;
+  document.querySelector(".question-text").textContent = questions[currentQuestion - 1];
+
   document.getElementById("questions").style.display = "none";
   document.getElementById("game").style.display = "block";
 
@@ -115,6 +126,8 @@ window.onload = function() {
     }
   });
 };
+
+
 
 
   </script>
@@ -248,6 +261,13 @@ body {
   margin: 0;
 }
 
+.question-text {
+  font-size: 18px;        /* readable size */
+  font-weight: bold;      /* emphasis */
+  color: white;           /* matches your theme */
+  text-align: center;     /* centered above letters */
+  margin-bottom: 15px;    /* spacing before scrambled letters */
+}
 
 
   </style>
@@ -276,13 +296,16 @@ body {
 
 <!-- Game -->
 <div id="game" style="display:none;">
+  <div id="questionArea">
+  <p class="question-text">Question will appear here</p>
+  </div><br>
   <div id="scrambleText"></div> <br>
   <input id="answerBox" type="text" placeholder="Type your answer here"> <br>
   <button onclick="sendData()">SEND</button> <br>
   <button onclick="goBack()">Back to Questions</button> <br>
 </div>
 
-<p class="version-text">v1</p>
+<p class="version-text">v2</p>
 
 </body>
 </html>
