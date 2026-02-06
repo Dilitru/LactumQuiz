@@ -81,9 +81,10 @@ function restoreSpaces(original, built) {
         timestamp: firebase.firestore.Timestamp.now()
       });
       console.log("Data sent!");
+	  goBack();
     } catch (e) {
       console.error(e);
-      alert("Error submitting to server, but your answer was correct.");
+      goBack();
     }
   }
   
