@@ -4,22 +4,34 @@
   <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Game</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Firebase App (compat version) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<!-- Firestore (compat version) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // Replace with your Firebase config
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCv6nPwgzTl7qDNSZ1MkpoGAOHyxpkKL4s",
+		authDomain: "quizapp-cf724.firebaseapp.com",
+		databaseURL: "https://quizapp-cf724-default-rtdb.asia-southeast1.firebasedatabase.app",
+		projectId: "quizapp-cf724",
+		storageBucket: "quizapp-cf724.firebasestorage.app",
+		messagingSenderId: "948696897116",
+		appId: "1:948696897116:web:8d8bf48e0b818ace0ef899",
+		measurementId: "G-MLNBNFC70Y"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Initialize Firestore
+  const db = firebase.firestore();
+
+
 
     let tableNumber = null;
     let currentQuestion = null;
@@ -71,7 +83,6 @@
 }
 
 window.sendData = async function() {
-  // Normalize user input: trim, uppercase, remove spaces
   const userAnswer = document.getElementById("answerBox").value
     .trim()
     .toUpperCase()
@@ -82,29 +93,25 @@ window.sendData = async function() {
     .replace(/\s+/g, "");
 
   if (userAnswer !== correctAnswer) {
-    //  Wrong answer popup
     alert("Answer is wrong! Please try again.");
     return;
   }
 
-  //  Correct answer popup immediately
   alert("Correct! Answer submitted.");
 
-  // Then attempt to send data to Firebase
   try {
-    await addDoc(collection(db, "submissions"), {
+    await db.collection("submissions").add({
       tableNumber: tableNumber,
       questionNumber: currentQuestion,
-      timestamp: Date.now()
+      timestamp: firebase.firestore.Timestamp.now()
     });
-    // Hide the game section after submission
     document.getElementById("game").style.display = "none";
     document.getElementById("questions").style.display = "block";
   } catch (e) {
     console.error(e);
     alert("Error submitting to server, but your answer was correct.");
   }
-}
+};
 
     window.closePopup = function() {
       document.getElementById("popup").style.display = "none";
