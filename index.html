@@ -10,6 +10,83 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
   <script type="module">
+	let currentAnswer = "FOOD POVERTY"; // original with spaces
+	let normalizedAnswer = currentAnswer.replace(/\s+/g, "").toUpperCase();
+	let progressIndex = 0;
+	let builtAnswer = "";
+
+function startUnscramble(questionNumber) {
+  document.getElementById("unscrambleArea").innerHTML = "";
+  document.getElementById("answerArea").innerHTML = "???";
+  progressIndex = 0;
+  builtAnswer = "";
+
+  normalizedAnswer = answers[questionNumber].replace(/\s+/g, "").toUpperCase();
+  currentAnswer = answers[questionNumber].toUpperCase();
+
+  const scrambledLetters = normalizedAnswer.split("").sort(() => Math.random() - 0.5);
+
+  scrambledLetters.forEach(letter => {
+    const btn = document.createElement("button");
+    btn.textContent = letter;
+    btn.onclick = () => handleLetterClick(letter, btn, questionNumber);
+    document.getElementById("unscrambleArea").appendChild(btn);
+  });
+}
+
+
+function handleLetterClick(letter, btn, questionNumber) {
+  const expectedLetter = normalizedAnswer[progressIndex];
+
+  if (letter !== expectedLetter) {
+    showPopup("Wrong answer! Try again.");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.style.visibility = "hidden";
+  builtAnswer += letter;
+  progressIndex++;
+
+  // Show progress with restored spaces
+  const displayAnswer = restoreSpaces(currentAnswer, builtAnswer);
+  document.getElementById("answerArea").textContent = displayAnswer;
+
+  if (progressIndex === normalizedAnswer.length) {
+    showPopup("Congratulations! You spelled it correctly. Press OK to send your answer to the screen.");
+    sendData(questionNumber);
+  }
+}
+
+// Helper: restore spaces from original answer
+function restoreSpaces(original, built) {
+  let result = "";
+  let builtIndex = 0;
+  for (let i = 0; i < original.length; i++) {
+    if (original[i] === " ") {
+      result += " ";
+    } else {
+      result += built[builtIndex] || "";
+      builtIndex++;
+    }
+  }
+  return result;
+}
+  
+  async function sendData(questionNumber) {
+    try {
+      await db.collection("submissions").add({
+        tableNumber: parseInt(document.getElementById("tableNumber").value, 10),
+        questionNumber: questionNumber,
+        timestamp: firebase.firestore.Timestamp.now()
+      });
+      console.log("Data sent!");
+    } catch (e) {
+      console.error(e);
+      alert("Error submitting to server, but your answer was correct.");
+    }
+  }
+  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -63,55 +140,12 @@
     window.showQuestion = function(num) {
   currentQuestion = num;
   document.querySelector(".question-text").textContent = questions[currentQuestion - 1];
-
   document.getElementById("questions").style.display = "none";
   document.getElementById("game").style.display = "block";
-
-  const correctAnswer = answers[num];
-  const scrambled = correctAnswer.split("").sort(() => Math.random() - 0.5);
-
-  const container = document.getElementById("scrambleText");
-  container.innerHTML = "";
-  scrambled.forEach(letter => {
-    const span = document.createElement("span");
-    span.textContent = letter;
-    span.className = "scramble-letter";
-    container.appendChild(span);
-  });
-
-  document.getElementById("answerBox").value = "";
-}
-
-window.sendData = async function() {
-  const userAnswer = document.getElementById("answerBox").value
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, "");
-
-  const correctAnswer = answers[currentQuestion]
-    .toUpperCase()
-    .replace(/\s+/g, "");
-
-  if (userAnswer !== correctAnswer) {
-    alert("Answer is wrong! Please try again.");
-    return;
-  }
-
-  alert("Correct! Answer submitted.");
-
-  try {
-    await db.collection("submissions").add({
-      tableNumber: tableNumber,
-      questionNumber: currentQuestion,
-      timestamp: firebase.firestore.Timestamp.now()
-    });
-    document.getElementById("game").style.display = "none";
-    document.getElementById("questions").style.display = "block";
-  } catch (e) {
-    console.error(e);
-    alert("Error submitting to server, but your answer was correct.");
-  }
-};
+  startUnscramble(num);
+  
+	}
+  
 
     window.closePopup = function() {
       document.getElementById("popup").style.display = "none";
@@ -120,19 +154,16 @@ window.sendData = async function() {
 	window.goBack = function() {
   document.getElementById("game").style.display = "none";
   document.getElementById("questions").style.display = "block";
-  document.getElementById("answerBox").value = "";
 	}
 	
-	// Attach listener once the page loads
-window.onload = function() {
-  const answerBox = document.getElementById("answerBox");
-  answerBox.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-      event.preventDefault(); // prevent form submission refresh
-      sendData();             // call the same function as SEND button
-    }
-  });
-};
+function showPopup(message) {
+  document.getElementById("popupMessage").textContent = message;
+  document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
 
 
 
@@ -185,23 +216,13 @@ body {
   margin: 10px;
   border: none;
   border-radius: 8px;
-  background-color: red;
+  background-color:  #8B0000;
   color: white;
   font-weight: bold;
 }
 
     button:hover {
       opacity: 0.85;
-    }
-    #popup {
-      display:none;
-      position:fixed;
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      background:white;
-      border:2px solid black;
-      padding:20px;
-      text-align:center;
     }
     img {
       max-width: 90%;
@@ -227,18 +248,6 @@ body {
   margin: 5px;
 }
 	
-	.popup {
-  display: none;
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border: 2px solid black;
-  padding: 20px;
-  text-align: center;
-  z-index: 1000;
-	}
-
   .question-title {
   text-align: center;
   font-weight: bold;
@@ -276,6 +285,59 @@ body {
   margin-bottom: 15px;    /* spacing before scrambled letters */
 }
 
+#backButton {
+  background-color: #333333; /* dark grey */
+  color: white;
+  border: none;
+  border-radius: 10px; /* slightly rounded */
+  padding: 6px 12px; /* smaller size */
+  font-size: 14px;   /* smaller text */
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#backButton:hover {
+  background-color: #555555; /* lighter grey on hover */
+}
+
+#answerArea {
+	font-size: 2em;
+	font-weight: bold;
+}
+
+/* Overlay */
+.popup {
+  display: none;              /* hidden by default */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7); /* semi-transparent black */
+  display: flex;              /* center content */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;              /* make sure it’s on top */
+}
+
+/* Popup box */
+.popup-content {
+  background: #333;           /* dark grey box */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.popup-content button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #FF0000; /* red button */
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
 
   </style>
 </head>
@@ -286,7 +348,13 @@ body {
 
   <!-- Setup -->
   <div id="setup">
-    <input id="tableNumber" placeholder="Enter table number"> <br>
+    <input 
+  type="number" 
+  id="tableNumber" 
+  min="1" 
+  step="1" 
+  placeholder="Enter table number">
+ <br>
     <button onclick="setTable()">Next</button>
   </div>
 
@@ -306,13 +374,25 @@ body {
   <div id="questionArea">
   <p class="question-text">Question will appear here</p>
   </div><br>
-  <div id="scrambleText"></div> <br>
-  <input id="answerBox" type="text" placeholder="Type your answer here"> <br>
-  <button onclick="sendData()">SEND</button> <br>
-  <button onclick="goBack()">Back to Questions</button> <br>
+  	Press the letters in the correct order to form the answer!
+    <div id="unscrambleArea"></div><br>
+
+	<div id="answerArea">---</div>
+	<br>
+<button id="backButton" onclick="goBack()">Back to Questions</button> <br>
 </div>
 
-<p class="version-text">v3</p>
+<div id="popup" class="popup" style="display:none;">
+  <div class="popup-content">
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+
+
+
+<p class="version-text">v4</p>
 
 </body>
 </html>
