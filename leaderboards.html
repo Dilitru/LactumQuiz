@@ -8,27 +8,20 @@
   <style>
     /* Global text styling */
     body {
-      font-family: 'Inter', sans-serif;
-      color: white;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      background-color: #8B0000;
-    }
-
-    h1 {
-  margin-top: 20px;
-  font-size: 48px;
-  text-shadow: 
-    0 0 10px #ffffff,
-    0 0 20px #ff0000,
-    0 0 30px #ff0000,
-    0 0 40px #ff0000;
+	font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: center;   /* horizontal centering */
+  align-items: center;       /* vertical centering */
+  height: 100vh;             /* full viewport height */
+  margin: 0;                 /* remove default body margin */
+  background: linear-gradient(to bottom, #ff131c, #81191d);
 }
+
+
 
     /* Buttons */
     button {
-      background-color: #FF0000; /* bright red */
+      background-color: #81191d; /* bright red */
       color: white;
       border: none;
       border-radius: 25px; /* rounded */
@@ -43,11 +36,36 @@
       background-color: #cc0000; /* darker red on hover */
     }
 
-    /* Chart canvas */
     #leaderboardChart {
-      background-color: transparent; /* keep background clean */
-      margin-top: 20px;
-    }
+  background-color: transparent; /* keep background clean */
+  margin: 20px auto;             /* auto left/right margins center it */
+  width: 80%;
+  display: block;                /* ensure canvas behaves like a block */
+}
+
+#leaderboardWrapper {
+  background-color: white;     /* red background */
+  border-radius: 20px;       /* rounded corners */
+  padding: 30px;             /* space inside */
+  text-align: center;        /* center text/buttons inside */
+  color: red;              /* make text readable on red */
+  font-weight: bold;
+  max-width: 800px;          /* optional width limit */
+  width: 80%;                /* responsive scaling */
+}
+
+#leaderboardWrapper button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+
+
   </style>
 
   <!-- Inter font import -->
@@ -55,6 +73,7 @@
 </head>
 
 <body>
+  <div id="leaderboardWrapper">
   <h1>DHA CHALLENGE LEADERBOARD</h1>
   <div>
     <button onclick="showLeaderboard(1)">Q1</button>
@@ -64,6 +83,7 @@
     <button onclick="showLeaderboard(5)">Q5</button>
   </div>
   <canvas id="leaderboardChart" width="400" height="200"></canvas>
+</div>
 
   <script>
     // Firebase config
@@ -115,7 +135,7 @@ const values = sortedEntries.map(([_, count]) => count);
     labels: labels,
     datasets: [{
       data: values,
-      backgroundColor: "white" // bars are white
+      backgroundColor: "red" // bars are white
     }]
   },
   options: {
@@ -124,13 +144,13 @@ const values = sortedEntries.map(([_, count]) => count);
     },
     scales: {
       x: {
-        ticks: { color: "white" }, // x-axis labels white
+        ticks: { color: "red" }, // x-axis labels white
         grid: { color: "rgba(255,255,255,0.2)" } // faint white grid
       },
       y: {
         beginAtZero: true,
-        ticks: { precision: 0, color: "white" }, // y-axis labels white
-        grid: { color: "rgba(255,255,255,0.2)" }
+        ticks: { precision: 0, color: "red" }, // y-axis labels white
+        grid: { color: "red" }
       }
     }
   }
