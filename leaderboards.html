@@ -8,32 +8,39 @@
   <style>
     /* Global text styling */
     body {
-	font-family: 'Inter', sans-serif;
+	background-image: url("background.jpg");
+  background-repeat: no-repeat;
+  background-size: auto 100%;   /* stretch across width, keep height proportional */
+  background-position: top center;
+
+	font-family: 'Nunito', sans-serif;
+	font-weight: bold;
   display: flex;
   justify-content: center;   /* horizontal centering */
   align-items: center;       /* vertical centering */
   height: 100vh;             /* full viewport height */
   margin: 0;                 /* remove default body margin */
-  background: linear-gradient(to bottom, #ff131c, #81191d);
+  
 }
 
 
 
     /* Buttons */
     button {
-      background-color: #81191d; /* bright red */
-      color: white;
+      background-color: white; /* bright red */
+	  font-weight: bold;
+	  color: red;
       border: none;
       border-radius: 25px; /* rounded */
-      padding: 10px 20px;
-      margin: 10px;
+      padding: 2px 2px;
+      margin: 1px;
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #cc0000; /* darker red on hover */
+      background-color: lightblue;/* darker red on hover */
     }
 
     #leaderboardChart {
@@ -44,14 +51,13 @@
 }
 
 #leaderboardWrapper {
-  background-color: white;     /* red background */
+  background-color: #c20e0e;     /* red background */
   border-radius: 20px;       /* rounded corners */
-  padding: 30px;             /* space inside */
+  padding: 20px;             /* space inside */
   text-align: center;        /* center text/buttons inside */
-  color: red;              /* make text readable on red */
+  color: white;              /* make text readable on red */
   font-weight: bold;
-  max-width: 800px;          /* optional width limit */
-  width: 80%;                /* responsive scaling */
+  width: flex;                /* responsive scaling */
 }
 
 #leaderboardWrapper button {
@@ -63,18 +69,59 @@
   cursor: pointer;
 }
 
+#leaderboard {
+  width: 100%;
+  margin: 40px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+#leaderboard h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+#topTables {
+  display: flex;              /* horizontal layout */
+  flex-direction: column;
+  justify-content: space-around; /* spread evenly across screen */
+  align-items: center;
+}
+
+.top-entry {
+  background: white;
+  border: 2px solid red;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  min-width: 350px;           /* consistent card width */
+  text-align: left;           /* left-justify text inside */
+  
+}
+
+.logo {
+  width: 400px;   /* set a fixed width */
+  height: auto;   /* keep proportions */
+  margin: 10px;
+}
+
 
 
 
   </style>
 
   <!-- Inter font import -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div id="leaderboardWrapper">
-  <h1>DHA CHALLENGE LEADERBOARD</h1>
+  <img src="DHAChallengeLogo.png" alt="Logo" class="logo">
   <div>
     <button onclick="showLeaderboard(1)">Q1</button>
     <button onclick="showLeaderboard(2)">Q2</button>
@@ -82,7 +129,11 @@
     <button onclick="showLeaderboard(4)">Q4</button>
     <button onclick="showLeaderboard(5)">Q5</button>
   </div>
-  <canvas id="leaderboardChart" width="400" height="200"></canvas>
+  <div id="leaderboard">
+  <h2>Top 5 Tables</h2>
+  <p id="topTables"></p>
+</div>
+
 </div>
 
   <script>
@@ -100,62 +151,37 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let chart; // global chart reference
+async function showLeaderboard(questionNumber) {
+  try {
+    const snapshot = await db.collection("submissions")
+      .where("questionNumber", "==", questionNumber)
+      .get();
 
-    async function showLeaderboard(questionNumber) {
-      // Query Firestore for submissions of this question
-      const snapshot = await db.collection("submissions")
-        .where("questionNumber", "==", questionNumber)
-        .get();
+    const counts = {};
+    snapshot.forEach(doc => {
+      const tableNumber = doc.data().tableNumber;
+      counts[tableNumber] = (counts[tableNumber] || 0) + 1;
+    });
 
-      // Count answers per table
-      const counts = {};
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const table = data.tableNumber;
-        counts[table] = (counts[table] || 0) + 1;
-      });
+    const sorted = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
 
-      // Prepare data for Chart.js
-      // Convert counts object into an array of [table, count] pairs
-const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const container = document.getElementById("topTables");
+    container.innerHTML = "";
+    sorted.forEach(([table, count], index) => {
+      const div = document.createElement("div");
+      div.className = "top-entry";
+      div.innerHTML = `TOP ${index + 1} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Table ${table}:&nbsp ${count} answers`;
+      container.appendChild(div);
+    });
 
-// Separate back into labels and values
-const labels = sortedEntries.map(([table]) => `Table ${table}`);
-const values = sortedEntries.map(([_, count]) => count);
-
-      const ctx = document.getElementById("leaderboardChart").getContext("2d");
-
-      // Destroy old chart if exists
-      if (chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-  type: "bar",
-  data: {
-    labels: labels,
-    datasets: [{
-      data: values,
-      backgroundColor: "red" // bars are white
-    }]
-  },
-  options: {
-    plugins: {
-      legend: { display: false }
-    },
-    scales: {
-      x: {
-        ticks: { color: "red" }, // x-axis labels white
-        grid: { color: "rgba(255,255,255,0.2)" } // faint white grid
-      },
-      y: {
-        beginAtZero: true,
-        ticks: { precision: 0, color: "red" }, // y-axis labels white
-        grid: { color: "red" }
-      }
-    }
+    document.getElementById("leaderboard").style.display = "block";
+  } catch (e) {
+    console.error("Error loading leaderboard:", e);
   }
-});
-    }
+}
+
   </script>
 </body>
 </html>
