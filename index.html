@@ -210,6 +210,11 @@ body {
 		height: auto;       /* let height adjust naturally */
 		margin-bottom: 10px;
 	}
+	
+	.logo2 {
+		width: 200px;
+		height: auto;
+	}
 
     input, textarea {
       width: 90%;
@@ -417,7 +422,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 60vh; /* full screen height */
+    height: flex; /* full screen height */
     background: white;
     border-radius: 20px;
     max-width: 400px;
@@ -498,7 +503,7 @@ body {
 
 <!-- Setup -->
 <div id="setup">
-
+	<img class="logo2" src="logo2.png" alt="Logo2">
   <h2>Welcome to DHA Challenge!</h2><br>
   <h4>Please enter your table number:</h4>
   <input 
@@ -513,6 +518,7 @@ body {
 
 <!-- Questions -->
 <div id="questions" style="display:none;">
+<img class="logo2" src="logo2.png" alt="Logo2">
   <p class="question-title"><h2>Please wait for the host's prompt before selecting a question</h2></p>
   <button class="white-button" onclick="showQuestion(1)">Question 1</button> <br>
   <button class="white-button" onclick="showQuestion(2)">Question 2</button> <br>
