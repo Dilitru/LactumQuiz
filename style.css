@@ -170,7 +170,6 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* full screen centering */
 }
 
 .decode-card {
@@ -316,6 +315,8 @@ button:hover {
 
 /*Reveal Page*/
 .reveal-card {
+  display: flex;
+  flex-direction: column;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
@@ -342,7 +343,7 @@ button:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1500px;
+  width: 600px;
   z-index: 0;
   /*animation: spinRays 10s linear infinite; /* slow rotation */
 }
@@ -354,7 +355,7 @@ button:hover {
 
 .can-img {
   position: relative;
-  width: 600px;
+  width: 400px;
   z-index: 1; /* sits above the rays */
 }
 
