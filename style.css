@@ -332,7 +332,7 @@ button:hover {
   transform: translate(-50%, -50%);
   width: 460px;
   z-index: 0;
-  animation: spinRays 10s linear infinite; /* slow rotation */
+  /*animation: spinRays 10s linear infinite; /* slow rotation */
 }
 
 @keyframes spinRays {
