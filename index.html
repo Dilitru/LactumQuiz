@@ -1,557 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
   <title>Quiz Game</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<!-- Firebase App (compat version) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<!-- Firestore (compat version) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-
-  <script type="module">
-	let currentAnswer = "FOOD POVERTY"; // original with spaces
-	let normalizedAnswer = currentAnswer.replace(/\s+/g, "").toUpperCase();
-	let progressIndex = 0;
-	let builtAnswer = "";
-
-function startUnscramble(questionNumber) {
-  document.getElementById("unscrambleArea").innerHTML = "";
-  document.getElementById("answerArea").innerHTML = "???";
-  progressIndex = 0;
-  builtAnswer = "";
-
-  normalizedAnswer = answers[questionNumber].replace(/\s+/g, "").toUpperCase();
-  currentAnswer = answers[questionNumber].toUpperCase();
-
-  const scrambledLetters = normalizedAnswer.split("").sort(() => Math.random() - 0.5);
-
-  scrambledLetters.forEach(letter => {
-    const btn = document.createElement("button");
-    btn.textContent = letter;
-    btn.onclick = () => handleLetterClick(letter, btn, questionNumber);
-    document.getElementById("unscrambleArea").appendChild(btn);
-  });
-}
-
-
-function handleLetterClick(letter, btn, questionNumber) {
-  const expectedLetter = normalizedAnswer[progressIndex];
-
-  if (letter !== expectedLetter) {
-    showPopup("Wrong answer! Try again.");
-    return;
-  }
-
-  btn.disabled = true;
-  btn.style.visibility = "hidden";
-  builtAnswer += letter;
-  progressIndex++;
-
-  // Show progress with restored spaces
-  const displayAnswer = restoreSpaces(currentAnswer, builtAnswer);
-  document.getElementById("answerArea").textContent = displayAnswer;
-
-  if (progressIndex === normalizedAnswer.length) {
-    showPopup("Congratulations! You spelled it correctly. Press OK to send your answer to the screen.");
-    sendData(questionNumber);
-  }
-}
-
-// Helper: restore spaces from original answer
-function restoreSpaces(original, built) {
-  let result = "";
-  let builtIndex = 0;
-  for (let i = 0; i < original.length; i++) {
-    if (original[i] === " ") {
-      result += " ";
-    } else {
-      result += built[builtIndex] || "";
-      builtIndex++;
-    }
-  }
-  return result;
-}
-  
-  async function sendData(questionNumber) {
-    try {
-      await db.collection("submissions").add({
-        tableNumber: parseInt(document.getElementById("tableNumber").value, 10),
-        questionNumber: questionNumber,
-        timestamp: firebase.firestore.Timestamp.now()
-      });
-      console.log("Data sent!");
-	  goBack();
-    } catch (e) {
-      console.error(e);
-      goBack();
-    }
-  }
-  
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    // Replace with your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCv6nPwgzTl7qDNSZ1MkpoGAOHyxpkKL4s",
-		authDomain: "quizapp-cf724.firebaseapp.com",
-		databaseURL: "https://quizapp-cf724-default-rtdb.asia-southeast1.firebasedatabase.app",
-		projectId: "quizapp-cf724",
-		storageBucket: "quizapp-cf724.firebasestorage.app",
-		messagingSenderId: "948696897116",
-		appId: "1:948696897116:web:8d8bf48e0b818ace0ef899",
-		measurementId: "G-MLNBNFC70Y"
-    };
-
-    // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-
-  // Initialize Firestore
-  const db = firebase.firestore();
-
-
-
-    let tableNumber = null;
-    let currentQuestion = null;
-
-    const answers = {
-      1: "POVERTY",
-      2: "DHA",
-      3: "BRAIN",
-      4: "SYNAPSE",
-      5: "DHASURV"
-    };
-	
-	const questions = [
-	"1. Food _______ is the condition of not having enough food, or food of good enough quality, to meet a person’s basic nutritional needs.",
-	"2. Which omega-3 fatty acid is critical for brain development?",
-	"3. Aside from the retina, where can we find the highest concentration of docosahexaenoic acid (DHA) in the body?",
-	"4. What is the name of the tiny gap or junction where one neuron sends signals to another cell?",
-	"5. Complete the sentence: With Lactum 3+, we can help give the Filipino children the DHA they ________!"
-	];
-
-
-    window.setTable = function() {
-      tableNumber = document.getElementById("tableNumber").value;
-      if (!tableNumber || isNaN(tableNumber) || tableNumber < 1) { alert("Enter table number!"); return; }
-      document.getElementById("setup").style.display = "none";
-      document.getElementById("questions").style.display = "block";
-    }
-
-    window.showQuestion = function(num) {
-  currentQuestion = num;
-  document.querySelector(".question-text").textContent = questions[currentQuestion - 1];
-  document.getElementById("questions").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  startUnscramble(num);
-  
-	}
-  
-
-    window.closePopup = function() {
-      document.getElementById("popup").style.display = "none";
-    }
-	
-	window.goBack = function() {
-  document.getElementById("game").style.display = "none";
-  document.getElementById("questions").style.display = "block";
-	}
-	
-function showPopup(message) {
-  document.getElementById("popupMessage").textContent = message;
-  document.getElementById("popup").style.display = "flex";
-}
-
-function closePopup() {
-  document.getElementById("popup").style.display = "none";
-}
-
-
-
-
-  </script>
-  <style>
-  html, body {
-  height: 90%;              /* stretch to full viewport */
-  margin: 0;
-  padding: 0;
-}
-
-
-body {
-  min-height: 90vh;          /* always at least full screen height */
-  background: linear-gradient(
-    to bottom,
-    #00008B 0%,   /* light blue from 0% */
-    #ADD8E6 88%,  /* stays dark blue until 80% */
-    #7CFC00 92%,  /* jumps to green at 80% */
-    #008000 100%  /* stays green until 100% */
-  );
-
-
-  background-repeat: no-repeat; /* stop tiling */
-  background-attachment: fixed; /* lock gradient to viewport */
-  background-size: cover;       /* stretch gradient to cover entire screen */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'Nunito', sans-serif;
-  margin: 0;
-  padding: 20px;
-  text-align: center;
-  
-
-}
-
-	
-	
-    .logo {
-		width: 120px;       /* control width */
-		height: auto;       /* let height adjust naturally */
-		margin-bottom: 10px;
-	}
-	
-	.logo2 {
-		width: 200px;
-		height: auto;
-	}
-
-    input, textarea {
-      width: 90%;
-      max-width: 400px;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    button {
-  font-size: 1.2em;       /* scales with screen */
-  padding: 10px 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color:  #ff131c;
-  color: white;
-  font-weight: bold;
-}
-
-    button:hover {
-      opacity: 0.85;
-    }
-    img {
-      max-width: 90%;
-      height: auto;
-      margin: 15px 0;
-    }
-	
-	#scrambleText {
-	margin: 20px 0;
-	text-align: center;
-	}
-
-	.scramble-letter {
-  display: inline-block;
-  font-size: 32px;
-  font-weight: bold;
-  color: white; /* fill stays visible */
-  text-shadow: 
-    -2px -2px 0 black,
-     2px -2px 0 black,
-    -2px  2px 0 black,
-     2px  2px 0 black; /* outline effect */
-  margin: 5px;
-}
-	
-  .question-title {
-  text-align: center;
-  font-weight: bold;
-  color: white;
-  font-size: 20px;
-  margin-bottom: 15px;
-  }
-  
-  #answerBox {
-  font-size: 1.2em;
-  padding: 8px;
-  width: 80%;            /* responsive width */
-  max-width: 400px;
-  margin: 15px auto;
-  display: block;
-}
-
-.version-text {
-  position: fixed;       /* stays in place */
-  bottom: 5px;           /* near the bottom edge */
-  left: 50%;             /* center horizontally */
-  transform: translateX(-50%); /* true centering */
-  font-size: 10px;       /* tiny text */
-  font-weight: bold;     /* readable */
-  color: white;          /* matches your theme */
-  opacity: 0.8;          /* subtle but visible */
-  margin: 0;
-}
-
-.question-text {
-  font-size: 18px;        /* readable size */
-  font-weight: bold;      /* emphasis */
-  color: red;           /* matches your theme */
-  text-align: center;     /* centered above letters */
-  margin-bottom: 15px;    /* spacing before scrambled letters */
-}
-
-#backButton {
-  background-color: #b5b5b5; /* dark grey */
-  color: white;
-  border: none;
-  border-radius: 10px; /* slightly rounded */
-  padding: 6px 12px; /* smaller size */
-  font-size: 14px;   /* smaller text */
-  cursor: pointer;
-  margin: 10px;
-  transition: background-color 0.3s ease;
-}
-
-#backButton:hover {
-  background-color: #555555; /* lighter grey on hover */
-}
-
-#answerArea {
-	font-size: 2em;
-	font-weight: bold;
-	color: red;
-  letter-spacing: 0.2em; /* adds space */
-
-}
-
-/* Overlay */
-.popup {
-  display: none;              /* hidden by default */
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7); /* semi-transparent black */
-  display: flex;              /* center content */
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;              /* make sure it’s on top */
-}
-
-/* Popup box */
-.popup-content {
-  background: #333;           /* dark grey box */
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  min-width: 200px;
-}
-
-.popup-content button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: #FF0000; /* red button */
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-}
-
-
-
-  /* Center the setup area */
-  #setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 50vh; /* full screen height */
-    background: white;
-    border-radius: 20px;
-    max-width: 400px;
-    margin: auto;
-    padding: 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    text-align: center;
-  }
-
-  /* Heading text */
-  #setup h2 {
-    color: red;
-    margin-bottom: 0px;
-	padding: 10px;
-	border: 3px solid red;
-	border-radius: 12px;
-  }
-  
-  #setup h4 {
-    color: red;
-    margin-bottom: 0px;
-  }
-
-  /* Input styling */
-  #setup input {
-    background: white;
-    color: red;
-    border: 1px solid red;
-    border-radius: 10px;
-    padding: 10px;
-    width: 80%;
-    font-size: 16px;
-	font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  /* Button styling */
-  #setup button {
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 18px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  #setup button:hover {
-    background: darkred;
-  }
-  
-  #questions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: flex; /* full screen height */
-    background: white;
-    border-radius: 20px;
-    max-width: 400px;
-    margin: auto;
-    padding: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    text-align: center;
-  }
-  
-  #questions button {
-    font-size: 1.2em;       /* scales with screen */
-  padding: 10px 90px;
-  margin: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color:  red;
-  color: white;
-  font-weight: bold;
-  }
-  
-  #questions h2 {
-  font-size: 1.1em;
-    color: red;
-    margin-bottom: 0px;
-	padding: 5px;
-	border: 3px solid red;
-	border-radius: 12px;
-  }
-  
-  #game {
-	display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 60vh; /* full screen height */
-    background: white;
-    border-radius: 20px;
-    max-width: 400px;
-    margin: auto;
-    padding: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    text-align: center;
-  }
-  
-  #game h4 {
-  font-color: red;
-  }
-
-.logo-banner {
-  position: fixed;   /* pin to the very top */
-  top: 0;
-  width: 120%;       /* stretch edge-to-edge */
-  text-align: center;/* center the image inside */
-  z-index: 1000;
-  padding: 0;
-  margin: 0;
-}
-
-.logo-banner img {
-  width: 100%;       /* make the banner image span full width */
-  height: auto;      /* keep proportions */
-  display: block;    /* removes inline spacing */
-  margin: 0 auto;    /* ensures centered if not full width */
-}
-
-
-
-
-
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Logo always on top -->
-<div class="logo-banner">
-  <img src="logo.png" alt="Logo">
-</div>
+  <header>
+    <img src="logo.png" alt="Event Logo" id="logo">
+  </header>
+
+  <main>
+  <!--Table and Name Entry -->
+  <section id="infoEntryPage" class="card hidden">
+    <img src="app-logo.png" alt="App Logo" id="appLogo">
+
+    <h3>Please enter your table number and name.</h3>
+    <label for="tableNumber">Table Number:</label><br>
+    <input type="number" id="tableNumber" min="1" step="1" required><br><br>
+
+    <label for="playerName">Your Name:</label><br>
+    <input type="text" id="playerName" required><br><br>
+
+    <button id="nextBtn">Next</button>
+  </section>
   
-
-<!-- Setup -->
-<div id="setup">
-	<img class="logo2" src="logo2.png" alt="Logo2">
-  <h2>Welcome to DHA Challenge!</h2><br>
-  <h4>Please enter your table number:</h4>
-  <input 
-    type="number" 
-    id="tableNumber" 
-    min="1" 
-    step="1" 
-    placeholder="Enter table number">
-  <button onclick="setTable()">Next</button>
-</div>
-
-
-<!-- Questions -->
-<div id="questions" style="display:none;">
-<img class="logo2" src="logo2.png" alt="Logo2">
-  <p class="question-title"><h2>Please wait for the host's prompt before selecting a question</h2></p>
-  <button class="white-button" onclick="showQuestion(1)">Question 1</button> <br>
-  <button class="white-button" onclick="showQuestion(2)">Question 2</button> <br>
-  <button class="white-button" onclick="showQuestion(3)">Question 3</button> <br>
-  <button class="white-button" onclick="showQuestion(4)">Question 4</button> <br>
-  <button class="white-button" onclick="showQuestion(5)">Question 5</button> <br>
-</div>
-
-
-<!-- Game -->
-<div id="game" style="display:none;">
-  <div id="questionArea">
-  <p class="question-text">Question will appear here</p>
+  <!-- Question 1 Page-->
+  <section id="question1Page" class="hidden card">
+  <div id="illustration">
+    <!-- Hotspot for Question 1 -->
+    <div id="q1spot" class="hotspot" style="top:190px; left:120px;"></div>
   </div>
-  	<h4>Press the letters in the correct order to form the answer!</h4>
-    <div id="unscrambleArea"></div><br>
+  </section>
 
-	<div id="answerArea">---</div>
-	<br>
-<button id="backButton" onclick="goBack()">Back to Questions</button> <br>
-</div>
+   <!--Answer Pages-->
+    <section id="answer1Page" class="hidden card">
+	<h4>Please select an Answer:</h4><br>
+	<div id="answer1Debug"><h6>Answers are 1)A 2)B 3)C (this message will not appear in final product)</h6></div>
+    <div class="answer-buttons">
+      A: ANSWER 1 Q1<button id="btnA">A</button>
+      B: ANSWER 2 Q1<button id="btnB">B</button>
+      C: ANSWER 3 Q1<button id="btnC">C</button>
+    </div>
+    </section>
 
-<div id="popup" class="popup" style="display:none;">
-  <div class="popup-content">
-    <p id="popupMessage"></p>
-    <button onclick="closePopup()">OK</button>
+	<section id="answer2Page" class="hidden card">
+	<h4>Please select an Answer:</h4><br>
+	<div id="answer2Debug"><h6>Answers are 1)A 2)B 3)C (this message will not appear in final product)</h6></div>
+	  <div class="answer-buttons">
+		A: ANSWER 1 Q2 <button id="btnA2">A</button>
+		B: ANSWER 2 Q2 <button id="btnB2">B</button>
+		C: ANSWER 3 Q2 <button id="btnC2">C</button>
+	  </div>
+	</section>
+
+	<section id="answer3Page" class="hidden card">
+	<h4>Please select an Answer:</h4><br>
+	<div id="answer3Debug"><h6>Answers are 1)A 2)B 3)C (this message will not appear in final product)</h6></div>
+	  <div class="answer-buttons">
+		A: ANSWER 1 Q3 <button id="btnA3">A</button>
+		B: ANSWER 2 Q3 <button id="btnB3">B</button>
+		C: ANSWER 3 Q3 <button id="btnC3">C</button>
+	  </div>
+	</section>
+
+  <!-- Question 2 Page-->
+  <section id="question2Page" class="hidden card">
+  <div id="illustration2">
+    <!-- Hotspot for Question 2 -->
+    <div id="q2spot" class="hotspot" style="top:180px; left:120px;"></div>
   </div>
-</div>
+  </section>
+  
+  <!-- Question 3 Page-->
+  <section id="question3Page" class="hidden card">
+  <div id="illustration3">
+    <!-- Hotspot for Question 3 -->
+    <div id="q3spot" class="hotspot" style="top:325px; left:125px;"></div>
+  </div>
+  </section>
 
+  <!-- Decode Page --->
+  <section id="decodePage" class="hidden">
+  <div class="decode-card">
+    <div id="decodePageHint"><h6>Input 000. Then press DECODE. (This message will not appear in the final product)</h6></div>
+    <div class="pin-equation">
+      <input type="number" class="pin-input" id="num1">
+      <span class="pin-symbol">+</span>
+      <input type="number" class="pin-input" id="num2">
+      <span class="pin-symbol">=</span>
+      <input type="number" class="pin-input" id="num3">
+    </div>
+    <button id="decodeBtn">DECODE</button>
+  </div>
+  </section>
 
+  <!-- 000 Page -->
+  <section id="000Page" class="hidden">
+  <div class="zero-card">
+    <div id="000PageHint"><h6>Press all three 0s. (This message will not appear in the final product)</h6></div>
+    <p class="congrats-text">Congratulations! You have cracked the code!</p>
+    <div class="equation-row">
+      <img src="zero1.png" class="zero-btn" id="zero1" alt="0">
+      <img src="plus.png" class="symbol" alt="+">
+      <img src="zero2.png" class="zero-btn" id="zero2" alt="0">
+      <img src="equal.png" class="symbol" alt="=">
+      <img src="zero3.png" class="zero-btn" id="zero3" alt="0">
+    </div>
+  </div>
+</section>
 
+  <!--- Secret Page--->
+  <section id="secretPage" class="hidden">
+  <div class="secret-card">
+    <div id="secretPageHint"><h6>Press the can. (This message will not appear in the final product)</h6></div>
+    <button id="milkCanBtn" class="milk-can-btn">
+      <img src="milkCan.png" alt="Milk Can">
+    </button>
+  </div>
+  </section>
 
-<p class="version-text">v10</p>
+  <!--- Reveal Page --->
+  <section id="revealPage" class="hidden">
+  <div class="reveal-card">
+    <div class="glow-container">
+      <img src="light-rays.png" class="light-rays" alt="glow">
+      <img src="can.png" class="can-img" alt="can">
+    </div>
+    <p class="reveal-text">Raise your phone up!</p>
+  </div>
+  </section>
 
+  <!--RESET button-->
+  <button id="resetBtn">RESET(this button will not appear in final)</button>
+  
+  </main>
 </body>
 </html>

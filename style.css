@@ -1,0 +1,354 @@
+/*
+-----Background elements-----
+*/
+/* Background: fade white → light green */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, white, #90ee90); /* light green */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #015718;
+}
+
+
+
+/* Logo placement */
+header {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+  position: fixed; /* stays at top even if scrolling */
+  top: 0;
+  left: 0;
+}
+
+#logo {
+	max-height: 10vh; /* 10% of viewport height */
+  display: inline-block; /* ensures it respects text-align center */
+}
+
+
+/*
+-----Card styling-----
+*/
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 20px;
+  max-width: 90vh;
+  margin: 40px auto;
+  text-align: center;
+}
+
+/* App logo inside card */
+#appLogo {
+  max-height: 80px;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 80%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Button */
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/*
+--- Question Pages Stlying ---
+*/
+#illustration {
+  height: 480px;                  /* always take 80% of viewport height */
+  width: 270px;                   /* full width */
+  margin: auto;
+  position: relative;
+
+  background-image: url("illust1.png");
+  background-size: cover;      /* keep aspect ratio */
+  background-repeat: no-repeat;  /* no tiling */
+  background-position: center;   /* centered in the div */
+}
+
+#illustration2 {
+  height: 480px;                  /* always take 80% of viewport height */
+  width: 270px;                   /* full width */
+  margin: auto;
+  position: relative;
+
+  background-image: url("illust2.png");
+  background-size: cover;      /* keep aspect ratio */
+  background-repeat: no-repeat;  /* no tiling */
+  background-position: center;   /* centered in the div */
+}
+
+#illustration3 {
+  height: 480px;                  /* always take 80% of viewport height */
+  width: 270px;                   /* full width */
+  margin: auto;
+  position: relative;
+
+  background-image: url("illust2.png");
+  background-size: cover;      /* keep aspect ratio */
+  background-repeat: no-repeat;  /* no tiling */
+  background-position: center;   /* centered in the div */
+}
+
+
+/* Hotspots still overlay the illustration */
+.hotspot {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: rgba(255,0,0,0.3); /* semi-transparent red for testing */
+  cursor: pointer;
+}
+
+/*
+--- Answer Pages styling-----
+*/
+.answer-buttons {
+  display: flex;
+  flex-direction: column;   /* arrange horizontally */
+  justify-content: center;
+  gap: 20px;             /* spacing between buttons */
+}
+
+.answer-buttons button {
+  font-size: 1rem;       /* more normal text size */
+  padding: 10px 20px;    /* normal padding */
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 120px;      /* consistent button width */
+  
+  /* Center text properly */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/*
+--- Decode page stlying ---
+*/
+#decodePage {
+  justify-content: center;   /* center horizontally */
+  align-items: center;       /* center vertically */
+  }
+
+.decode-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* full screen centering */
+}
+
+.decode-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  padding: 40px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.decode-card input {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #046100;
+  box-sizing: border-box;   /* green font color */
+}
+
+.decode-card input::placeholder {
+  color: #BFBFBF;            /* green placeholder too */
+  opacity: 1;
+}
+
+.decode-card button {
+  font-weight: bold;
+  font-size: 1.5rem;
+  padding: 20px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #DEB316;       /* green button */
+  color: #fff;               /* white text */
+  border: none;
+}
+
+.pin-equation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.pin-input {
+  width: 60px;              /* narrow like PIN slots */
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  color: #046100;
+  box-sizing: border-box;
+}
+
+.pin-symbol {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #DEB316;
+}
+
+
+/*000page*/
+
+.zero-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  padding: 30px;              /* more breathing room */
+  max-width: 800px;           /* allow larger cards */
+  width: 80%;                 /* take more horizontal space */
+  margin: 40px auto;          /* bigger margin for centering */
+  text-align: center;
+}
+
+.congrats-text {
+  font-size: 1.5rem;          /* larger headline */
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #046100;
+}
+
+.equation-text {
+  font-size: 5rem;            /* even bigger equation */
+  font-weight: bold;
+  color: #DEB316;
+}
+
+.hidden {
+  display: none;
+}
+
+.zero-btn {
+  width: 80px;
+}
+
+.symbol {
+  width: 60px;
+  pointer-events: none;  /* not clickable */
+}
+
+.equation-row {
+  display: flex;
+  justify-content: center;  /* centers horizontally */
+  align-items: center;      /* aligns vertically */
+  gap: 20px;                /* spacing between images */
+  margin: 20px auto;
+}
+.equation-row img {
+  max-height: 120px;        /* keep consistent sizing */
+}
+
+/*Secret Page*/
+
+.secret-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  padding: 30px;
+  max-width: 400px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.milk-can-btn {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.milk-can-btn img {
+  width: 200px;
+}
+
+/*Reveal Page*/
+.reveal-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  padding: 30px;
+  max-width: 600px;
+  margin: 60px auto;
+  text-align: center;
+  opacity: 0;                     /* start invisible */
+  animation: fadeInSlow 4s ease forwards; /* fade in dramatically */
+}
+
+@keyframes fadeInSlow {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.glow-container {
+  position: relative;
+  display: inline-block;
+}
+
+.light-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 460px;
+  z-index: 0;
+  animation: spinRays 10s linear infinite; /* slow rotation */
+}
+
+@keyframes spinRays {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.can-img {
+  position: relative;
+  width: 250px;
+  z-index: 1; /* sits above the rays */
+}
+
+.reveal-text {
+  font-size:0.8rem;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #046100;
+}
