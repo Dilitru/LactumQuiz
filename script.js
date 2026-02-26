@@ -172,11 +172,11 @@ function checkAnswer(answer) {
 
   if (answer === correct) {
 	console.log("Answer " + answer + " is correct");
-    showAlert("✅\nYour answer was correct!");
+    showAlert("Answer Submitted");
     //sendToFirestore(answer);
   } else {
 	console.log("Answer " + answer + " is wrong");
-    showAlert("❌\nYour answer was incorrect.");
+    showAlert("Answer Submitted");
     //sendToFirestore(answer); // still record wrong answers
   }
 
@@ -280,13 +280,18 @@ zeroButtons.forEach(btn => {
 /*
 --- Secret Page Function ---
 */
-document.getElementById("milkCanBtn").addEventListener("click", () => {
-  // Hide SecretPage
-  document.getElementById("secretPage").classList.add("hidden");
-  // Show RevealPage
-  document.getElementById("revealPage").classList.remove("hidden");
-  // Advance checkpoint
-  advanceCheckpoint();
+let hotspotClicks = 0;
+
+document.getElementById("milkCanHotspot").addEventListener("click", () => {
+  hotspotClicks++;
+  if (hotspotClicks >= 3) {
+    // Hide SecretPage
+    document.getElementById("secretPage").classList.add("hidden");
+    // Show RevealPage
+    document.getElementById("revealPage").classList.remove("hidden");
+    // Advance checkpoint
+    advanceCheckpoint();
+  }
 });
 
 /*
@@ -345,7 +350,7 @@ function showAlert(text) {
 
   // Add OK button
   const okButton = document.createElement("button");
-  okButton.textContent = "OK";
+  okButton.textContent = "PROCEED";
   okButton.style.fontSize = "3rem";
   okButton.style.padding = "10px 20px";
   okButton.style.borderRadius = "6px";
