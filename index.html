@@ -30,7 +30,7 @@
   <section id="question1Page" class="hidden card">
   <div id="illustration">
     <!-- Hotspot for Question 1 -->
-    <div id="q1spot" class="hotspot" style="top:480px; left:290px;"></div>
+    <div id="q1spot" class="hotspot" style="top:440px; left:260px;"></div>
   </div>
   </section>
 
@@ -69,7 +69,7 @@
   <section id="question2Page" class="hidden card">
   <div id="illustration2">
     <!-- Hotspot for Question 2 -->
-    <div id="q2spot" class="hotspot" style="top:450px; left:290px;"></div>
+    <div id="q2spot" class="hotspot" style="top:420px; left:260px;"></div>
   </div>
   </section>
   
@@ -77,7 +77,7 @@
   <section id="question3Page" class="hidden card">
   <div id="illustration3">
     <!-- Hotspot for Question 3 -->
-    <div id="q3spot" class="hotspot" style="top:850px; left:325px;"></div>
+    <div id="q3spot" class="hotspot" style="top:670px; left:290px;"></div>
   </div>
   </section>
 
@@ -114,12 +114,17 @@
   <!--- Secret Page--->
   <section id="secretPage" class="hidden">
   <div class="secret-card">
-    <div id="secretPageHint"><h2>Press the can. (This message will not appear in the final product)</h2></div>
-    <button id="milkCanBtn" class="milk-can-btn">
-      <img src="milkCan.png" alt="Milk Can">
-    </button>
+    <div id="secretPageHint">
+      <h2>Press "?" 3x. (This message will not appear in the final product)</h2>
+    </div>
+    <div class="milk-can-container">
+      <img src="milkCan.png" alt="Milk Can" id="milkCanImage">
+      <!-- Invisible hotspot overlay -->
+      <div id="milkCanHotspot"></div>
+    </div>
   </div>
   </section>
+
 
   <!--- Reveal Page --->
   <section id="revealPage" class="hidden">
@@ -128,7 +133,7 @@
       <img src="light-rays.png" class="light-rays" alt="glow">
       <img src="can.png" class="can-img" alt="can">
     </div>
-    <p class="reveal-text">Raise your phone up!</p>
+    <p class="reveal-text">ZERO is EVERYTHING</p>
   </div>
   </section>
 
