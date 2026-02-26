@@ -6,6 +6,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: linear-gradient(to bottom, white, #90ee90); /* light green */
+  height: 100vh;
   min-height: 90vh;
   display: flex;
   flex-direction: column;
