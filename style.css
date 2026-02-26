@@ -5,7 +5,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, white, #90ee90); /* light green */
+  background: #e3e3e3;
+background: linear-gradient(180deg, rgba(227, 227, 227, 1) 0%, rgba(171, 255, 178, 1) 82%, rgba(227, 227, 227, 1) 100%);
   height: 100vh;
   min-height: 90vh;
   display: flex;
