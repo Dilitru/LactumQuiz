@@ -29,7 +29,7 @@
     .danmaku-message {
       position: absolute;
       white-space: nowrap;
-      font-size: 1em;
+      font-size: 5em;
       font-weight: bold;
       color: white;
       animation: scrollMessage 8s linear forwards;
@@ -45,7 +45,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 5em;
+      font-size: 8em;
       font-weight: bold;
       color: white;
       text-shadow: 0 0 10px lime, 0 0 20px lime, 0 0 30px lime;
@@ -144,7 +144,7 @@ function spawnMessage(text) {
 setInterval(() => {
   const name = getNextName();
   spawnMessage(name);
-}, 500);
+}, 400);
 
 // THANK YOU DOCTORS click handler
 document.getElementById("thankyou").addEventListener("click", () => {
