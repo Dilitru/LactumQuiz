@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <meta charset="UTF-8">
+  <title>Danmaku Demo</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url("background.jpg") no-repeat center center;
+      background-size: cover; /* stretch background */
+      overflow: hidden;
+	  font-family: 'Arial';
+    }
+
+    #danmaku-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .danmaku-message {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      animation: scrollMessage 8s linear forwards;
+    }
+
+    @keyframes scrollMessage {
+      from { left: -200px; }
+      to   { left: 100%; }
+    }
+
+    #thankyou {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 10px lime, 0 0 20px lime, 0 0 30px lime;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="danmaku-container">
+    <div id="thankyou">THANK YOU DOCTORS</div>
+  </div>
+
+  <script>
+	const firebaseConfig = {
+  apiKey: "AIzaSyCv6nPwgzTl7qDNSZ1MkpoGAOHyxpkKL4s",
+  authDomain: "quizapp-cf724.firebaseapp.com",
+  databaseURL: "https://quizapp-cf724-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "quizapp-cf724",
+  storageBucket: "quizapp-cf724.firebasestorage.app",
+  messagingSenderId: "948696897116",
+  appId: "1:948696897116:web:8d8bf48e0b818ace0ef899",
+  measurementId: "G-MLNBNFC70Y"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+	
+	
+
+    // Filipino-sounding names list
+    let namesList = [
+      "Juan Dela Cruz","Maria Santos","Jose Ramirez","Ana Villanueva","Carlos Mendoza",
+      "Rosa Bautista","Miguel Reyes","Luz Navarro","Pedro Aquino","Teresa Gonzales",
+      "Andres Castillo","Elena Cruz","Fernando Torres","Isabel Flores","Ricardo Morales",
+      "Carmen Delgado","Manuel Rivera","Dolores Santiago","Antonio Ramos","Gloria Herrera",
+      "Eduardo Lopez","Patricia Dominguez","Roberto Garcia","Estrella Jimenez","Francisco Cabrera",
+      "Victoria Salazar","Javier Ortega","Consuelo Pineda","Luis Estrada","Soledad Marquez",
+      "Alejandro Fajardo","Catalina Suarez","Domingo Villanueva","Esperanza Cruz","Hector Bautista",
+      "Juliana Santos","Mariano Gutierrez","Natividad Romero","Oscar Fernandez","Pilar Castillo",
+      "Ramon Alvarez","Silvia Mendoza","Teodoro Santos","Ursula Navarro","Valentin Reyes",
+      "Ximena Morales","Yolanda Torres","Zacarias Delgado","Benigno Santiago","Clarita Ramos"
+    ];
+
+    const container = document.getElementById("danmaku-container");
+const totalLanes = 10;
+let laneQueue = shuffle(Array.from({ length: totalLanes }, (_, i) => i));
+
+  let usedNames = [];
+
+
+// Utility: shuffle an array
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Get next lane (random order, all lanes used before repeat)
+function getNextLane() {
+  if (laneQueue.length === 0) {
+    laneQueue = shuffle(Array.from({ length: totalLanes }, (_, i) => i));
+  }
+  return laneQueue.shift();
+}
+
+// Get next name (from list or Firestore)
+function getNextName() {
+  if (namesList.length === 0) {
+    namesList = usedNames;
+    usedNames = [];
+  }
+  const name = namesList.shift();
+  usedNames.push(name);
+  return name;
+}
+
+// Spawn a message in a random lane
+function spawnMessage(text) {
+  const lane = getNextLane();
+  const message = document.createElement("div");
+  message.className = "danmaku-message";
+  message.innerText = text;
+
+  const laneHeight = container.clientHeight / totalLanes;
+  message.style.top = `${lane * laneHeight}px`;
+
+  container.appendChild(message);
+
+  message.addEventListener("animationend", () => {
+    container.removeChild(message);
+  });
+}
+
+// Cycle through names every 2 seconds
+setInterval(() => {
+  const name = getNextName();
+  spawnMessage(name);
+}, 500);
+
+// THANK YOU DOCTORS click handler
+document.getElementById("thankyou").addEventListener("click", () => {
+  db.collection("submissions").limit(50).get()
+    .then(snapshot => {
+      namesList = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.playerName) {
+          namesList.push(data.playerName);
+        }
+      });
+      usedNames = [];
+      console.log("Names replaced from Firestore:", namesList);
+    })
+    .catch(err => {
+      console.error("Error fetching names from Firestore:", err);
+    });
+});
+  </script>
+</body>
+</html>

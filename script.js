@@ -2,6 +2,26 @@
 const correctAnswers = ["C", "A", "B"];
 let questionNumber = parseInt(localStorage.getItem("questionNumber")) || 1;
 
+
+    // Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCv6nPwgzTl7qDNSZ1MkpoGAOHyxpkKL4s",
+		authDomain: "quizapp-cf724.firebaseapp.com",
+		databaseURL: "https://quizapp-cf724-default-rtdb.asia-southeast1.firebasedatabase.app",
+		projectId: "quizapp-cf724",
+		storageBucket: "quizapp-cf724.firebasestorage.app",
+		messagingSenderId: "948696897116",
+		appId: "1:948696897116:web:8d8bf48e0b818ace0ef899",
+		measurementId: "G-MLNBNFC70Y"
+    };
+
+    // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Initialize Firestore
+  const db = firebase.firestore();
+
+
 /*
 --- DEBUG MODE SWITCH---
 */
@@ -17,6 +37,10 @@ window.onload = function() {
 
   if (!checkpointValue) {
     console.log("New game started");
+  }
+  
+  if(questionNumber == 1){
+	  localStorage.setItem("questionNumber", 1);
   }
 
   // If nothing saved yet, default to step 1
@@ -104,6 +128,8 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   // Save checkpoint data, add +1 to checkpoint;
   localStorage.setItem("tableNumber", tableNumber);
   localStorage.setItem("playerName", playerName);
+  sendPlayerName(playerName);
+  
   
   advanceCheckpoint();
 
@@ -111,6 +137,26 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   document.getElementById("infoEntryPage").classList.add("hidden");
   document.getElementById("question1Page").classList.remove("hidden");
 });
+
+// Separate function to send playerName
+function sendPlayerName(playerName) {
+  if (!playerName) {
+    alert("Please enter a name first.");
+    return;
+  }
+
+  db.collection("submissions").add({
+    type: "name",
+    playerName: playerName, // use playerName instead of name
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => {
+    console.log("Player name submitted:", playerName);
+   })
+  .catch((err) => {
+    console.error("Error adding document:", err);
+  });
+}
 
 /*
 --- Question 1 Page functions ---
@@ -174,6 +220,8 @@ function checkAnswer(answer) {
 	console.log("Answer " + answer + " is correct");
     showAlert("Answer Submitted");
     //sendToFirestore(answer);
+	
+  sendTableAndQuestion();
   } else {
 	console.log("Answer " + answer + " is wrong");
     showAlert("Answer Submitted");
@@ -182,6 +230,35 @@ function checkAnswer(answer) {
 
   // Advance regardless of correctness
   goToNextSection();
+  
+}
+
+function sendTableAndQuestion() {
+  // Get values from localStorage
+  const tableNumber = localStorage.getItem("tableNumber");
+  const questionNumber = localStorage.getItem("questionNumber");
+  console.log("tableNumber from localStorage:", tableNumber);
+  console.log("questionNumber from localStorage:", questionNumber);
+
+
+  
+  if (!tableNumber || !questionNumber) {
+    console.error("Missing tableNumber or questionNumber in localStorage");
+    return;
+  }
+
+  db.collection("submissions").add({
+    type: "answer",
+    tableNumber: parseInt(tableNumber, 10),   // store as number
+    questionNumber: parseInt(questionNumber, 10),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => {
+    console.log(`Sent: table ${tableNumber}, question ${questionNumber}`);
+  })
+  .catch((err) => {
+    console.error("Error adding document:", err);
+  });
 }
 
 function goToNextSection() {
