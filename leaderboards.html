@@ -159,24 +159,39 @@ async function showLeaderboard(questionNumber) {
       .where("questionNumber", "==", questionNumber)
       .get();
 
-    const counts = {};
-    snapshot.forEach(doc => {
-      const tableNumber = doc.data().tableNumber;
-      counts[tableNumber] = (counts[tableNumber] || 0) + 1;
-    });
+    db.collection("submissions").get().then(snapshot => {
+  // Collect earliest timestamp per table
+  const fastest = {};
 
-    const sorted = Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const tableNumber = data.tableNumber;
+    const ts = data.timestamp?.toMillis(); // convert Firestore Timestamp to ms
 
-    const container = document.getElementById("topTables");
-    container.innerHTML = "";
-    sorted.forEach(([table, count], index) => {
-      const div = document.createElement("div");
-      div.className = "top-entry";
-      div.innerHTML = `TOP ${index + 1} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Table ${table}`;
-      container.appendChild(div);
-    });
+    if (!tableNumber || !ts) return;
+
+    // Keep the earliest timestamp for each table
+    if (!fastest[tableNumber] || ts < fastest[tableNumber]) {
+      fastest[tableNumber] = ts;
+    }
+  });
+
+  // Sort tables by earliest timestamp (fastest answer)
+  const sorted = Object.entries(fastest)
+    .sort((a, b) => a[1] - b[1]) // ascending: earliest first
+    .slice(0, 5);
+
+  const container = document.getElementById("topTables");
+  container.innerHTML = "";
+
+  sorted.forEach(([table, ts], index) => {
+    const div = document.createElement("div");
+    div.className = "top-entry";
+    div.innerHTML = `TOP ${index + 1} &nbsp;&nbsp;&nbsp;&nbsp; Table ${table}`;
+    container.appendChild(div);
+	console.log("TOP 5 FASTEST");
+  });
+});
 
     document.getElementById("leaderboard").style.display = "block";
   } catch (e) {
