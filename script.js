@@ -25,7 +25,7 @@ let questionNumber = parseInt(localStorage.getItem("questionNumber")) || 1;
 /*
 --- DEBUG MODE SWITCH---
 */
-let debug = true; //DEBUG MODE switch
+let debug = false; //DEBUG MODE switch
 
 /*
 -----On load: Checkpoint and debug mode-----
@@ -445,6 +445,7 @@ function showAlert(text) {
 }
 
 																		
+
 
 
 
