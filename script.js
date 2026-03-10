@@ -245,6 +245,7 @@ function addLetter(letter, btnElement) {
 
     // Check if finished
     if (currentWord === targetWord) {
+		sendQuestionCompletion();
       advanceCheckpoint();
       advanceQuestionNumber();
       document.getElementById("questionPage").style.display = "none";
@@ -289,4 +290,42 @@ document.getElementById("bypass-btn").addEventListener("click", () => {
   console.log("Bypass pressed, showing question directly");
   showQuestion();
 });
+
+/*SENDING DATA FUNCTION*/
+function sendQuestionCompletion() {
+  // Get values from localStorage
+  const tableNumber = localStorage.getItem("tableNumber");
+  const questionNumber = localStorage.getItem("questionNumber");
+
+  // Log values before sending
+  console.log("LocalStorage values → tableNumber:", tableNumber, "questionNumber:", questionNumber);
+
+  if (!tableNumber || !questionNumber) {
+    console.error("Missing tableNumber or questionNumber in localStorage!");
+    return;
+  }
+
+  // Build the payload
+  const data = {
+    tableNumber: tableNumber,
+    questionNumber: Number(questionNumber), // numeric for queries
+    timestamp: new Date().toISOString(),
+    type: String(questionNumber)            // string for recall
+  };
+
+  // Save to Firestore with auto-generated doc ID
+  firebase.firestore()
+    .collection("submissions")
+    .add(data)
+    .then(docRef => {
+      console.log("Firestore WRITE success. DocID:", docRef.id, "Data:", data);
+    })
+    .catch(error => {
+      console.error("Error writing to Firestore:", error);
+    });
+}
+
+
+
+
 
