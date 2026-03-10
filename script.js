@@ -1,7 +1,7 @@
 /*
 --- DEBUG MODE SWITCH---
 */
-let debug = false; //DEBUG MODE switch
+let debug = true; //DEBUG MODE switch
 
 /*
 --- Firebase setup ---
@@ -76,6 +76,12 @@ window.onload = function() {
     case 12:
       document.getElementById("congratsPage").classList.remove("hidden");
       break;
+  }
+
+  if (debug == true){
+    document.getElementById("resetBtn").classList.remove("hidden");
+    document.getElementById("proceedBtn").classList.add("hidden");
+    document.getElementById("bypass-btn").classList.remove("hidden");
   }
 }
 
@@ -169,6 +175,7 @@ function isQuestionUnlocked() {
 
 function showLockedPage() {
   document.getElementById("readyPage").classList.add("hidden");
+  document.getElementById("readyPage").style.display = "none";
   document.getElementById("questionLockedPage").classList.remove("hidden");
   const okBtn = document.getElementById("okButton");
   let countdown = 5; // seconds
@@ -196,6 +203,7 @@ document.getElementById("okButton").addEventListener("click", () => {
   console.log("OK pressed, returning to ready check...");
   // TODO: add navigation logic here
   document.getElementById("readyPage").classList.remove("hidden");
+  document.getElementById("readyPage").style.display = "block";
   document.getElementById("questionLockedPage").classList.add("hidden");
 });
 

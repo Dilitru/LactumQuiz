@@ -87,6 +87,14 @@ button {
   justify-content: center;
 }
 
+#unscrambledWord {
+  font-weight: bold;       /* makes the text bold */
+  letter-spacing: 8px;     /* adds space between letters */
+  font-size: 24px;         /* optional: make it larger for clarity */
+  text-align: center;      /* optional: center the word */
+  margin-top: 20px;        /* optional: add space above */
+}
+
 
 
 .hidden {
