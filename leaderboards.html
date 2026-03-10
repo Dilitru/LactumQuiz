@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaderboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Global text styling */
+    body {
+	background-image: url("background.jpg");
+  background-repeat: no-repeat;
+  background-size: auto 100%;   /* stretch across width, keep height proportional */
+  background-position: top center;
+
+	font-family: 'Nunito', sans-serif;
+	font-weight: bold;
+  display: flex;
+  justify-content: center;   /* horizontal centering */
+  align-items: center;       /* vertical centering */
+  height: 100vh;             /* full viewport height */
+  margin: 0;                 /* remove default body margin */
+  
+}
+
+
+
+    /* Buttons */
+    button {
+      background-color: white; /* bright red */
+	  font-weight: bold;
+	  color: red;
+      border: none;
+      border-radius: 25px; /* rounded */
+      padding: 2px 2px;
+      margin: 1px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: lightblue;/* darker red on hover */
+    }
+
+    #leaderboardChart {
+  background-color: transparent; /* keep background clean */
+  margin: 20px auto;             /* auto left/right margins center it */
+  width: 80%;
+  display: block;                /* ensure canvas behaves like a block */
+}
+
+#leaderboardWrapper {
+  background-color: #c20e0e;     /* red background */
+  border-radius: 20px;       /* rounded corners */
+  padding: 20px;             /* space inside */
+  text-align: center;        /* center text/buttons inside */
+  color: white;              /* make text readable on red */
+  font-weight: bold;
+  width: flex;                /* responsive scaling */
+}
+
+#leaderboardWrapper button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height:flex;
+}
+
+#leaderboard {
+  width: 100%;
+  margin: 40px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+#leaderboard h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+#topTables {
+  display: flex;              /* horizontal layout */
+  flex-direction: column;
+  justify-content: space-around; /* spread evenly across screen */
+  align-items: center;
+}
+
+.top-entry {
+  background: white;
+  border: 2px solid red;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  min-width: 350px;           /* consistent card width */
+  text-align: left;           /* left-justify text inside */
+  
+}
+
+.logo {
+  width: 400px;   /* set a fixed width */
+  height: auto;   /* keep proportions */
+  margin: 10px;
+}
+
+.logo2 {
+ width:150px;
+ height: auto;
+}
+
+
+  </style>
+
+  <!-- Inter font import -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="leaderboardWrapper">
+
+  <img src="DHAChallengeLogo.png" alt="Logo" class="logo">
+  <div>
+    <button onclick="showLeaderboard(1)">Q1</button>
+    <button onclick="showLeaderboard(2)">Q2</button>
+    <button onclick="showLeaderboard(3)">Q3</button>
+    <button onclick="showLeaderboard(4)">Q4</button>
+    <button onclick="showLeaderboard(5)">Q5</button>
+  </div>
+  <div id="leaderboard">
+  <h2>Top 5 Tables</h2>
+  <p id="topTables"></p>
+</div>
+
+</div>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+  apiKey: "AIzaSyCv6nPwgzTl7qDNSZ1MkpoGAOHyxpkKL4s",
+  authDomain: "quizapp-cf724.firebaseapp.com",
+  databaseURL: "https://quizapp-cf724-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "quizapp-cf724",
+  storageBucket: "quizapp-cf724.firebasestorage.app",
+  messagingSenderId: "948696897116",
+  appId: "1:948696897116:web:8d8bf48e0b818ace0ef899",
+  measurementId: "G-MLNBNFC70Y"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+async function showLeaderboard(questionNumber) {
+  try {
+    const snapshot = await db.collection("submissions")
+      .where("questionNumber", "==", questionNumber)
+      .get();
+
+    const counts = {};
+    snapshot.forEach(doc => {
+      const tableNumber = doc.data().tableNumber;
+      counts[tableNumber] = (counts[tableNumber] || 0) + 1;
+    });
+
+    const sorted = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const container = document.getElementById("topTables");
+    container.innerHTML = "";
+    sorted.forEach(([table, count], index) => {
+      const div = document.createElement("div");
+      div.className = "top-entry";
+      div.innerHTML = `TOP ${index + 1} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Table ${table}:&nbsp ${count} answers`;
+      container.appendChild(div);
+    });
+
+    document.getElementById("leaderboard").style.display = "block";
+  } catch (e) {
+    console.error("Error loading leaderboard:", e);
+  }
+}
+
+  </script>
+</body>
+</html>

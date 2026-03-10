@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Load Firebase compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Your script -->
+  <script src="script.js" defer></script>
+  
+  <!-- Event Logo -->
+	<header id="eventLogo">
+	  <img src="logo.png" alt="Event Logo">
+	</header>
+
+  
+  <main>
+  <!--Table and Name Entry -->
+  <section id="infoEntryPage" class="card hidden">
+    <img src="app-logo.png" alt="App Logo" class="app-logo">
+
+    <h3>Please enter your table number and name.</h3>
+    <label for="tableNumber">Table Number:</label><br>
+    <input type="number" id="tableNumber" min="1" step="1" required><br><br>
+
+    <button id="nextBtn">Next</button>
+  </section>
+  
+  <!-- Ready Page Card -->
+	<div id="readyPage" class="card hidden">
+	  <h4>Please wait for the next instructions before proceeding</h4>
+	  <button class="proceed-btn">PROCEED</button>
+	  <button id="bypass-btn">Bypass lock (DEMO ONLY)</button>
+	</div>
+	
+<!-- Question Locked Page -->
+<div class="card hidden" id="questionLockedPage">
+  <h2>Question is not yet unlocked, please wait</h2>
+  <button id="okButton" disabled>OK (5)</button>
+</div>
+
+<!-- Question Page -->
+<div class="card hidden" id="questionPage">
+  <h2>Unscramble the word</h2>
+  <div id="letterButtons"></div><p></p>
+  <div id="unscrambledWord"></div>
+</div>
+
+<!-- Congrats Page -->
+<div class="card hidden" id="congratsPage">
+  <h2>Congratulations!</h2>
+  <p>You finished the word!</p>
+  <button onclick="nextQuestion()">Continue</button>
+</div>
+
+
+  
+  <!--RESET button-->
+  <button id="resetBtn">RESET(this button will not appear in final)</button>
+  </main>
+ </body>
+ </html>

@@ -1,0 +1,94 @@
+/* Event Logo Styling */
+#eventLogo {
+  position: fixed;        /* stays on top even when scrolling */
+  top: 0;
+  left: 0;
+  width: 100%;            /* full width container */
+  background-color: transparent; /* optional background for contrast */
+  text-align: center;     /* center the logo image */
+  z-index: 1000;          /* ensure it stays above other elements */
+  padding: 0px 0px;        /* spacing around the logo */
+margin-bottom: 100px;
+}
+
+#eventLogo img {
+  max-width: 400px;       /* logo never exceeds 400px */
+  width: 100%;            /* scales responsively up to 400px */
+  height: auto;           /* keep aspect ratio */
+}
+
+
+body {
+  min-height: 100vh;          /* always at least full screen height */
+  background: linear-gradient(
+    to bottom,
+    #00008B 0%,   /* light blue from 0% */
+    #ADD8E6 88%,  /* stays dark blue until 80% */
+    #7CFC00 92%,  /* jumps to green at 80% */
+    #008000 100%  /* stays green until 100% */
+  );
+
+
+  background-repeat: no-repeat; /* stop tiling */
+  background-attachment: fixed; /* lock gradient to viewport */
+  background-size: cover;       /* stretch gradient to cover entire screen */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 150px;
+  padding: 20px;
+  text-align: center;
+  
+
+}
+
+button {
+  font-size: 1.2em;       /* scales with screen */
+  padding: 20px;
+  border: none;
+  border-radius: 8px;
+  background-color:  #ff131c;
+  color: white;
+  font-weight: bold;
+}
+
+/* Card Styling */
+.card {
+  background-color: #ffffff;   /* white background */
+  border-radius: 12px;         /* rounded edges */
+  padding: 20px;               /* inner spacing */
+  margin: 20px auto;           /* spacing around card, centered */
+  max-width: 500px;            /* optional width limit */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow for depth */
+}
+
+/* App Logo Styling */
+.app-logo {
+  max-width: 120px;   /* never go past 150px */
+  width: 100%;        /* scale down responsively */
+  height: auto;       /* keep aspect ratio */
+  display: block;     /* ensures proper spacing */
+  margin: 0 auto;     /* center horizontally */
+}
+
+#letterButtons button {
+  margin: 5px;          /* space around each button */
+  padding: 10px 15px;   /* make them bigger and easier to click */
+  font-size: 18px;      /* larger text for clarity */
+  border-radius: 6px;   /* rounded corners for nicer look */
+  cursor: pointer;
+}
+
+#letterButtons {
+  display: flex;
+  flex-wrap: wrap;      /* allow wrapping if too many letters */
+  gap: 10px;            /* consistent spacing between buttons */
+  justify-content: center;
+}
+
+
+
+.hidden {
+  display: none;
+}
