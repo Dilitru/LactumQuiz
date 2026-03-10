@@ -148,6 +148,8 @@
 	<button onclick="markStatus(2)">Q3</button>
 	<button onclick="markStatus(3)">Q4</button>
 	<button onclick="markStatus(4)">Q5</button>
+	<!-- New ALL button -->
+    <button onclick="showLeaderboardAll()">ALL</button>
 	<button id="lockAllBtn">🔒</button>
 
   </div>
@@ -262,6 +264,45 @@ function lockAllQuestions() {
 // Attach to button
 document.getElementById("lockAllBtn").addEventListener("click", lockAllQuestions);
 
+function showLeaderboardAll() {
+  firebase.firestore()
+    .collection("submissions")
+    .get()
+    .then(snapshot => {
+      const counts = {};
+
+      // Count submissions per table
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const table = data.tableNumber;
+
+        if (!counts[table]) {
+          counts[table] = 0;
+        }
+        counts[table] += 1;
+      });
+
+      // Sort by submission count (descending) and take top 5
+      const sorted = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      // Render leaderboard
+      const leaderboardList = document.getElementById("leaderboardList");
+      leaderboardList.innerHTML = "";
+
+      sorted.forEach(([table]) => {
+        const li = document.createElement("li");
+        li.textContent = `Table ${table}`;
+        leaderboardList.appendChild(li);
+      });
+
+      console.log("Leaderboard updated for ALL questions.");
+    })
+    .catch(error => {
+      console.error("Error fetching ALL leaderboard:", error);
+    });
+}
 
   </script>
 </body>
