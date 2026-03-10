@@ -1,7 +1,7 @@
 /*
 --- DEBUG MODE SWITCH---
 */
-let debug = true; //DEBUG MODE switch
+let debug = false; //DEBUG MODE switch
 
 /*
 --- Firebase setup ---
@@ -324,6 +324,7 @@ function sendQuestionCompletion() {
       console.error("Error writing to Firestore:", error);
     });
 }
+
 
 
 
