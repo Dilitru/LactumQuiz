@@ -22,7 +22,7 @@
   
   <main>
   <!--Table and Name Entry -->
-  <section id="infoEntryPage" class="card hidden">
+  <section id="infoEntryPage" class="intro-card hidden">
     <img src="app-logo.png" alt="App Logo" class="app-logo">
 
     <h3>Please enter your table number and name.</h3>
@@ -46,17 +46,12 @@
 </div>
 
 <!-- Question Page -->
-<div class="card hidden" id="questionPage">
-  <h2>Unscramble the word</h2>
-  <div id="letterButtons"></div><p></p>
-  <div id="unscrambledWord"></div>
-</div>
+<div class="card hidden" id="quizContainer"></div>
 
 <!-- Congrats Page -->
 <div class="card hidden" id="congratsPage">
   <h2>Congratulations!</h2>
-  <p>You finished the word!</p>
-  <button onclick="nextQuestion()">Continue</button>
+  <p>You finished the quiz!</p>
 </div>
 
 

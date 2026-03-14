@@ -22,10 +22,10 @@ body {
   min-height: 100vh;          /* always at least full screen height */
   background: linear-gradient(
     to bottom,
-    #00008B 0%,   /* light blue from 0% */
-    #ADD8E6 88%,  /* stays dark blue until 80% */
-    #7CFC00 92%,  /* jumps to green at 80% */
-    #008000 100%  /* stays green until 100% */
+    #4167f0 0%,
+    #021c78 88%,
+    #010538 92%, 
+    #4167f0 100% 
   );
 
 
@@ -48,14 +48,24 @@ button {
   padding: 20px;
   border: none;
   border-radius: 8px;
-  background-color:  #ff131c;
-  color: white;
+  background-color:  #fbecb9;
+  color: #001b7f;
   font-weight: bold;
 }
 
 /* Card Styling */
 .card {
   background-color: #ffffff;   /* white background */
+  border-radius: 12px;         /* rounded edges */
+  padding: 20px;               /* inner spacing */
+  margin: 20px auto;           /* spacing around card, centered */
+  max-width: 500px;            /* optional width limit */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* subtle shadow for depth */
+}
+
+.intro-card {
+	color:white;
+  background-color: #100679;   /* white background */
   border-radius: 12px;         /* rounded edges */
   padding: 20px;               /* inner spacing */
   margin: 20px auto;           /* spacing around card, centered */
@@ -99,4 +109,27 @@ button {
 
 .hidden {
   display: none;
+}
+
+#quizContainer {
+  flex-direction: column;   /* stack vertically */
+  align-items: center;      /* center horizontally */
+}
+
+#quizContainer button {
+  background-color: #3266da;
+  color: white;
+  font-weight: bold;
+  padding: 12px 20px;
+  width: 200px;             /* fixed width for consistency */
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  margin: 5px;
+}
+
+#quizContainer button:hover {
+  background-color: #0b3491;
+  color: white;
 }
