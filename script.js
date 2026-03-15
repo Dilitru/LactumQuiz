@@ -337,7 +337,7 @@ function renderButtons(letters) {
 
 function nextQuestion() {
 	document.getElementById("quizContainer").style.display = "none";
-  if (questionNumber <= words.length) {
+  if (questionNumber <= questionStatus.length) {
     document.getElementById("readyPage").style.display = "block";
     
   } else {
