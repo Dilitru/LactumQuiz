@@ -176,7 +176,7 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 const statusRef = db.collection("status").doc("statusDoc");
 
 // Local memory copy of the status array
-let questionStatus = [false, false, false, false, false, false, false, false, false];
+let questionStatus = [false, false, false, false, false, false, false, false];
 
 // Attach event listener to the PROCEED button
 document.querySelector(".proceed-btn").addEventListener("click", async () => {
@@ -300,7 +300,7 @@ function showQuestion() {
 }
 
 function addLetter(letter, btnElement) {
-  const nextIndex = currentWord.length;
+  const nextIndex = questionStatus.length;
 
   if (letter === targetWord[nextIndex]) {
     currentWord += letter;
@@ -312,10 +312,10 @@ function addLetter(letter, btnElement) {
     // Check if finished
     if (currentWord === targetWord) {
 		sendQuestionCompletion();
-      advanceCheckpoint();
-      advanceQuestionNumber();
-      document.getElementById("questionPage").style.display = "none";
-      document.getElementById("congratsPage").style.display = "block";
+		advanceCheckpoint();
+		advanceQuestionNumber();
+		document.getElementById("questionPage").style.display = "none";
+		document.getElementById("congratsPage").style.display = "block";
     }
   } else {
     alert("Wrong letter pressed!");
